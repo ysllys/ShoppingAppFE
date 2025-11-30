@@ -1,0 +1,54 @@
+<div class="product-detail-container">
+  <div class="header">
+    <button class="btn-back" (click)="goBack()">← Back to Products</button>
+  </div>
+
+  <div class="content" *ngIf="!loading && product; else loadingTemplate">
+    <div class="product-main">
+      <div class="product-image">
+        <img [src]="product.imageUrl || 'assets/placeholder.jpg'" [alt]="product.name">
+      </div>
+
+      <div class="product-info">
+        <h1>{{ product.name }}</h1>
+
+        <div class="price-section">
+          <span class="price">${{ product.retailPrice?.toFixed(2) }}</span>
+          <span class="wholesale" *ngIf="isAdmin">Wholesale: ${{ product.wholesalePrice?.toFixed(2) }}</span>
+          <span class="stock" *ngIf="isAdmin" [class.out-of-stock]="(product.quantity ?? 0) === 0" >
+            {{ product.quantity > 0 ? product.quantity + ' in stock' : 'Out of stock' }}
+          </span>
+        </div>
+
+        <div class="description">
+          <h3>Description</h3>
+          <p>{{ product.description || 'No description available' }}</p>
+        </div>
+
+        <div class="purchase-section">
+          <div class="quantity-selector">
+            <label>Quantity:</label>
+            <div class="quantity-control">
+              <button (click)="decrementQuantity()" [disabled]="cartQuantity <= 1">-</button>
+              <span>{{ cartQuantity }}</span>
+              <button (click)="incrementQuantity()" [disabled]="cartQuantity >= (product.quantity ?? 0)">+</button>
+            </div>
+          </div>
+
+          <div class="actions">
+            <button class="btn-add-cart" (click)="addToCart()" [disabled]="(product.quantity ?? 0) === 0">
+              Add to Cart
+            </button>
+            <button class="btn-watchlist" (click)="addToWatchlist()">
+              ⭐ Add to Watchlist
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<ng-template #loadingTemplate>
+  <div class="loading">Loading product details...</div>
+</ng-template>

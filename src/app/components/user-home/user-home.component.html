@@ -1,0 +1,79 @@
+<div class="user-home-container">
+  <div class="header">
+    <h1>My Dashboard</h1>
+  </div>
+
+  <div class="content">
+    <!-- Orders Section -->
+    <div class="section">
+      <h2>My Orders</h2>
+      <div class="table-container" *ngIf="!loading; else loadingTemplate">
+        <table class="data-table">
+          <thead>
+            <tr>
+              <th>Order ID</th>
+              <th>Time</th>
+              <th>Status</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let order of orders">
+              <td>#{{ order.id }}</td>
+              <td>{{ order.orderTime | date:'short' }}</td>
+              <td>
+                <span class="status-badge" [class]="'status-' + order.status?.toLowerCase()">
+                  {{ order.status }}
+                </span>
+              </td>
+              <td>
+                <button class="btn-action" (click)="viewOrder(order.id)">View</button>
+              </td>
+            </tr>
+            <tr *ngIf="orders.length === 0">
+              <td colspan="5" class="no-data">No orders found</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- Products Section -->
+    <div class="products-section">
+      <!-- Frequently Purchased -->
+      <div class="product-card">
+        <h3>Frequently Purchased</h3>
+        <div class="product-list">
+          <div class="product-item" *ngFor="let product of frequentProducts" (click)="viewProduct(product.product.id)">
+            <img [src]="product.imageUrl || 'assets/placeholder.jpg'" [alt]="product.product.name">
+            <div class="product-info">
+              <h4>{{ product.product.name }}</h4>
+              <p class="price">${{ product.product.retailPrice?.toFixed(2) }}</p>
+              <p class="totalBought">Total Purchased: {{ product.totalBought }}</p>
+            </div>
+          </div>
+          <div *ngIf="frequentProducts.length === 0" class="no-data">No products found</div>
+        </div>
+      </div>
+
+      <!-- Recently Purchased -->
+      <div class="product-card">
+        <h3>Recently Purchased</h3>
+        <div class="product-list">
+          <div class="product-item" *ngFor="let product of recentProducts" (click)="viewProduct(product.id)">
+            <img [src]="product.imageUrl || 'assets/placeholder.jpg'" [alt]="product.name">
+            <div class="product-info">
+              <h4>{{ product.name }}</h4>
+              <p class="price">${{ product.retailPrice?.toFixed(2) }}</p>
+            </div>
+          </div>
+          <div *ngIf="recentProducts.length === 0" class="no-data">No products found</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<ng-template #loadingTemplate>
+  <div class="loading">Loading...</div>
+</ng-template>
